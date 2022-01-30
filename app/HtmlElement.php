@@ -16,9 +16,23 @@ class HtmlElement
         $this->attributes = $attributes;
     }
 
-    public function render()
+    public function render(): string
     {
+        $result = $this->openTag();
 
+        if ($this->isVoidElement()){
+            return $result;
+        }
+
+        $result .= $this->renderContent();
+
+        $result .= $this->closeTag();
+
+        return $result;
+    }
+
+    public function openTag(): string
+    {
         if (!empty($this->attributes)) {
 
             $htmlAttributes = '';
@@ -32,21 +46,38 @@ class HtmlElement
                 }
             }
 
-            $result = '<'.$this->name.$htmlAttributes.'>';
+            $result = $this->openTagWithAttributes($htmlAttributes);
 
         }else{
-
-            $result = '<'.$this->name.'>';
+            $result = $this->openTagWithoutAttributes();
         }
-
-        if (in_array($this->name, ['br', 'hr', 'img', 'input', 'meta'])){
-            return $result;
-        }
-
-        $result .= htmlentities($this->content, ENT_QUOTES, 'UTF-8');
-        $result .= '</'.$this->name.'>';
 
         return $result;
+    }
+
+    public function isVoidElement(): bool
+    {
+        return in_array($this->name, ['br', 'hr', 'img', 'input', 'meta']);
+    }
+
+    public function renderContent(): string
+    {
+        return htmlentities($this->content, ENT_QUOTES, 'UTF-8');
+    }
+
+    public function closeTag(): string
+    {
+        return '</' . $this->name . '>';
+    }
+
+    public function openTagWithAttributes(string $htmlAttributes): string
+    {
+        return '<' . $this->name . $htmlAttributes . '>';
+    }
+
+    public function openTagWithoutAttributes(): string
+    {
+        return '<' . $this->name . '>';
     }
 
 }

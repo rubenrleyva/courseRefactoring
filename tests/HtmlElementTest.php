@@ -8,6 +8,13 @@ class HtmlElementTest extends TestCase
 {
 
     /** @test */
+    function it_check_if_a_element_is_void_or_not()
+    {
+        $this->assertFalse((new HtmlElement('p'))->isVoidElement());
+        $this->assertTrue((new HtmlElement('img'))->isVoidElement());
+    }
+
+    /** @test */
     function it_asserts_true()
     {
         $this->assertTrue(true);
