@@ -2,6 +2,8 @@
 
 namespace App;
 
+use phpDocumentor\Reflection\Types\This;
+
 class HtmlElement
 {
 
@@ -33,7 +35,6 @@ class HtmlElement
 
     public function openTag(): string
     {
-
         return $this->isAttributes();
     }
 
@@ -66,28 +67,36 @@ class HtmlElement
     {
         if (!empty($this->attributes)) {
 
-            $htmlAttributes = '';
-
-            $htmlAttributes = $this->getHtmlAttributes($htmlAttributes);
+            $htmlAttributes = $this->attributes();
 
             $result = $this->openTagWithAttributes($htmlAttributes);
 
         } else {
             $result = $this->openTagWithoutAttributes();
         }
+
         return $result;
     }
 
-    public function getHtmlAttributes(string $htmlAttributes): string
+    public function attributes(): string
     {
-        foreach ($this->attributes as $name => $value) {
+        $htmlAttributes = '';
 
-            if (is_numeric($name)) {
-                $htmlAttributes .= ' ' . $value;
-            } else {
-                $htmlAttributes .= ' ' . $name . '="' . htmlentities($value, ENT_QUOTES, 'UTF-8') . '"'; // name="value"
-            }
+        foreach ($this->attributes as $name => $value) {
+            $htmlAttributes .= $this->renderAttribute($name, $value);
         }
+
+        return $htmlAttributes;
+    }
+
+    protected function renderAttribute($attribute, $value): string
+    {
+        if (is_numeric($attribute)) {
+            $htmlAttributes = ' ' . $value;
+        } else {
+            $htmlAttributes = ' ' . $attribute . '="' . htmlentities($value, ENT_QUOTES, 'UTF-8') . '"'; // name="value"
+        }
+
         return $htmlAttributes;
     }
 
