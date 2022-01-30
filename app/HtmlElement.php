@@ -33,26 +33,8 @@ class HtmlElement
 
     public function openTag(): string
     {
-        if (!empty($this->attributes)) {
 
-            $htmlAttributes = '';
-
-            foreach ($this->attributes as $name => $value) {
-
-                if (is_numeric($name)) {
-                    $htmlAttributes .= ' '.$value;
-                }else{
-                    $htmlAttributes .= ' '.$name.'="'.htmlentities($value, ENT_QUOTES, 'UTF-8').'"'; // name="value"
-                }
-            }
-
-            $result = $this->openTagWithAttributes($htmlAttributes);
-
-        }else{
-            $result = $this->openTagWithoutAttributes();
-        }
-
-        return $result;
+        return $this->isAttributes();
     }
 
     public function isVoidElement(): bool
@@ -78,6 +60,35 @@ class HtmlElement
     public function openTagWithoutAttributes(): string
     {
         return '<' . $this->name . '>';
+    }
+
+    public function isAttributes(): string
+    {
+        if (!empty($this->attributes)) {
+
+            $htmlAttributes = '';
+
+            $htmlAttributes = $this->getHtmlAttributes($htmlAttributes);
+
+            $result = $this->openTagWithAttributes($htmlAttributes);
+
+        } else {
+            $result = $this->openTagWithoutAttributes();
+        }
+        return $result;
+    }
+
+    public function getHtmlAttributes(string $htmlAttributes): string
+    {
+        foreach ($this->attributes as $name => $value) {
+
+            if (is_numeric($name)) {
+                $htmlAttributes .= ' ' . $value;
+            } else {
+                $htmlAttributes .= ' ' . $name . '="' . htmlentities($value, ENT_QUOTES, 'UTF-8') . '"'; // name="value"
+            }
+        }
+        return $htmlAttributes;
     }
 
 }
