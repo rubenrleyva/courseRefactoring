@@ -15,11 +15,11 @@ class HtmlElementTest extends TestCase
     }
 
     /** @test */
-    protected function it_generates_attributes()
+    function it_generates_attributes()
     {
         $element = new HtmlElement('span', ['class' => 'a_span', 'id' => 'the_span']);
 
-        $this->assetSame('class="a_span" id="the_span"', $element->attributes());
+        $this->assertSame(' class="a_span" id="the_span"', $element->attributes());
     }
 
 
