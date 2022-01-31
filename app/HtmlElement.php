@@ -63,7 +63,7 @@ class HtmlElement
 
     public function isAttributes(): string
     {
-        if ($this->hasAttributes()) {
+        if ($this->hasAttributes() ) {
             return $this->openTagWithAttributes($this->attributes());
         } else {
             return $this->openTagWithoutAttributes();
