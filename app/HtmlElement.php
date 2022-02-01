@@ -2,8 +2,6 @@
 
 namespace App;
 
-use phpDocumentor\Reflection\Types\This;
-
 class HtmlElement
 {
 
@@ -14,8 +12,8 @@ class HtmlElement
     public function __construct(string $name, array $attributes = [], $content= null)
     {
         $this->name = $name;
+        $this->attributes = new HtmlAttributes($attributes);
         $this->content = $content;
-        $this->attributes = $attributes;
     }
 
     public function render(): string
@@ -68,35 +66,16 @@ class HtmlElement
 
     public function hasAttributes(): bool
     {
-        return ! empty($this->attributes);
+        return ! empty($this->getAttributes());
+    }
+
+    protected function getAttributes(): array
+    {
+        return $this->attributes->attributes;
     }
 
     public function attributes(): string
     {
-        /*
-        $htmlAttributes = '';
-
-        foreach ($this->attributes as $name => $value) {
-            $htmlAttributes .= $this->renderAttribute($name, $value);
-        }
-
-        return $htmlAttributes;
-        */
-
-        return array_reduce(array_keys($this->attributes), function ($result, $attribute) {
-            //var_dump($result .' '.$attribute);
-            return $result . $this->renderAttribute($attribute);
-        }, '');
-
+        return $this->attributes->attributes();
     }
-
-    protected function renderAttribute($attribute): string
-    {
-        if (is_numeric($attribute)) {
-            return ' ' . $this->attributes[$attribute];
-        }
-
-        return ' ' . $attribute . '="' . htmlentities($this->attributes[$attribute], ENT_QUOTES, 'UTF-8') . '"';
-    }
-
 }
